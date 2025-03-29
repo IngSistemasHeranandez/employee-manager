@@ -1,0 +1,87 @@
+﻿@functions {
+    string GetRowClass(string accion)
+    {
+        return accion switch
+        {
+            "Insert" => "table-success",     // Verde
+            "Update" => "table-info",        // Azul
+            "Delete" => "table-danger",      // Rojo
+            "Select" => "table-secondary",   // Gris
+            _ => ""
+        };
+    }
+}
+
+
+@model List<EMPLOYEE_MANAGER.Services.AuditoriaRegistro>
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@{
+    var total = Model?.Count ?? 0;
+    var inserts = Model?.Count(r => r.Accion == "Insert") ?? 0;
+    var updates = Model?.Count(r => r.Accion == "Update") ?? 0;
+    var deletes = Model?.Count(r => r.Accion == "Delete") ?? 0;
+    var selects = Model?.Count(r => r.Accion == "Select") ?? 0;
+}
+
+<p>
+    <strong>Resumen:</strong> Total: @total |
+    Inserts: @inserts |
+    Updates: @updates |
+    Deletes: @deletes |
+    Selects: @selects
+</p>
+
+
+<p>Auditoría de operaciones realizadas sobre la base de datos (con fines comparativos entre ORM y conexiones directas)</p>
+
+<table class="table table-bordered table-striped text-center align-middle">
+    <thead class="table-dark text-center">
+        <tr class="text-center">
+            <th>#</th>
+            <th>Fecha y Hora</th>
+            <th>Acción</th>
+            <th>Tipo de Acceso</th>
+            <th>Entidad</th>
+            <th>ID Afectado</th>
+            <th>Tiempo (ms)</th>
+            <th>Ruta</th>
+            <th>Método</th>
+            <th>Observación</th>
+        </tr>
+    </thead>
+<tbody>
+    @if (Model != null && Model.Any())
+    {
+        int index = 1;
+        foreach (var registro in Model)
+        {
+            <tr class="@GetRowClass(registro.Accion)">
+                <td>@index</td>
+                <td>@registro.FechaHora.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                <td>@registro.Accion</td>
+                <td>@registro.TipoAcceso</td>
+                <td>@registro.Entidad</td>
+                <td>@registro.IdAfectado</td>
+                <td>@registro.TiempoMs ms (@(registro.TiempoMs / 1000.0) s)</td>
+                <td>@(registro.Ruta?.Split('/').Last())</td>
+                <td>@registro.Metodo</td>
+                <td>@registro.Observacion</td>
+            </tr>
+            index++;
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="10" class="text-center">No hay registros de auditoría.</td>
+        </tr>
+    }
+</tbody>
+
+</table>
