@@ -1,13 +1,14 @@
 ﻿@model IEnumerable<EMPLOYEE_MANAGER.Models.Empleado>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Index (SQL Directa)";
 }
+
 
 <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
     <h1 class="mb-3">Index</h1>
 
-            <!-- Indicador de modo actual -->
+        <!-- Indicador de modo actual -->
 @{
     var modo = ViewData["Modo"]?.ToString() ?? "Desconocido";
     var clase = "alert-secondary";
@@ -29,37 +30,38 @@
     @icono <strong>Modo actual:</strong> @modo
 </p>
 
-        <a asp-action="Create" class="btn btn-success mb-2">➕ Create New</a>
 
+        <a asp-action="Create" class="btn btn-success mb-2">➕ Create New</a>
+        
     <div class="d-flex flex-wrap gap-2">
         <div class="d-flex flex-column me-3">
-            <form asp-action="InsertarMasivo" method="post" class="mb-1">
+            <form asp-action="InsertarMasivoSql" method="post" class="mb-1">
                 <input type="hidden" name="auditoriaIndividual" value="false" />
                 <button type="submit" class="btn btn-outline-primary">📦 Insertar (Global)</button>
             </form>
-            <form asp-action="InsertarMasivo" method="post">
+            <form asp-action="InsertarMasivoSql" method="post">
                 <input type="hidden" name="auditoriaIndividual" value="true" />
                 <button type="submit" class="btn btn-outline-secondary">📦 Insertar (Individual)</button>
             </form>
         </div>
 
         <div class="d-flex flex-column me-3">
-            <form asp-action="EliminarMasivo" method="post" class="mb-1">
+            <form asp-action="EliminarMasivoSql" method="post" class="mb-1">
                 <input type="hidden" name="auditoriaIndividual" value="false" />
                 <button type="submit" class="btn btn-outline-danger">🗑️ Eliminar (Global)</button>
             </form>
-            <form asp-action="EliminarMasivo" method="post">
+            <form asp-action="EliminarMasivoSql" method="post">
                 <input type="hidden" name="auditoriaIndividual" value="true" />
                 <button type="submit" class="btn btn-outline-warning">🗑️ Eliminar (Individual)</button>
             </form>
         </div>
 
         <div class="d-flex flex-column">
-            <form asp-action="EditarMasivo" method="post" class="mb-1">
+            <form asp-action="EditarMasivoSql" method="post" class="mb-1">
                 <input type="hidden" name="auditoriaIndividual" value="false" />
                 <button type="submit" class="btn btn-outline-info">✏️ Editar (Global)</button>
             </form>
-            <form asp-action="EditarMasivo" method="post">
+            <form asp-action="EditarMasivoSql" method="post">
                 <input type="hidden" name="auditoriaIndividual" value="true" />
                 <button type="submit" class="btn btn-outline-warning">✏️ Editar (Individual)</button>
             </form>

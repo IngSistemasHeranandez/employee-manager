@@ -5,16 +5,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ? Agrega la conexi�n a la base de datos (usando appsettings.json)
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// 🔧 Agrega soporte para acceder a HttpContext (para leer cookies)
+builder.Services.AddHttpContextAccessor();
+
+// ⏬ La conexión ya no se decide aquí, se configurará dinámicamente en AppDbContext
+builder.Services.AddDbContext<AppDbContext>();
 
 // Agrega servicios MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configuraci�n del pipeline HTTP
+// Configuración del pipeline HTTP
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -25,7 +27,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthorization();
 
 // Ruta por defecto

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
 
 namespace EMPLOYEE_MANAGER.Models
 {
@@ -8,17 +9,35 @@ namespace EMPLOYEE_MANAGER.Models
         public DbSet<Empleado> Empleados { get; set; }
 
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AppDbContext(IConfiguration configuration)
+        public AppDbContext(
+            DbContextOptions<AppDbContext> options,
+            IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor
+        ) : base(options)
         {
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+{
+    if (!optionsBuilder.IsConfigured)
+    {
+        var preference = _httpContextAccessor.HttpContext?.Request.Cookies["ConnectionPreference"];
+        var connectionString = preference == "Remote"
+            ? _configuration.GetConnectionString("RemoteConnection")
+            : _configuration.GetConnectionString("LocalConnection");
+
+        optionsBuilder.UseSqlServer(connectionString);
+    }
+}
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var connectionString = _configuration.GetConnectionString("DefaultConnection");
-            optionsBuilder.UseSqlServer(connectionString);
+            base.OnModelCreating(modelBuilder);
         }
     }
-
 }

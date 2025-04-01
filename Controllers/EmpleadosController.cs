@@ -25,6 +25,9 @@ namespace EMPLOYEE_MANAGER.Controllers
         // GET: Empleados
     public async Task<IActionResult> Index()
     {
+      // Establece cookie para usar conexión local (EF Core)
+      Response.Cookies.Append("ConnectionPreference", "Local");
+      ViewData["Modo"] = "EF Core"; // ← esto indica el modo
       var sw = Stopwatch.StartNew();
       var empleados = await _context.Empleados.ToListAsync();
       sw.Stop();

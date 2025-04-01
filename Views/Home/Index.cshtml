@@ -1,8 +1,21 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4 mb-3">Bienvenido a EMPLOYEE_MANAGER</h1>
+    <p class="lead mb-4">
+        Esta aplicación permite gestionar empleados usando dos formas de acceso a base de datos:
+        <strong>Entity Framework Core (ORM)</strong> y <strong>ADO.NET (SQL Directa)</strong>.
+    </p>
+
+    <p>
+        Usa la barra de navegación superior para elegir la forma de acceso que deseas probar.
+    </p>
+
+    <hr class="my-4" />
+
+    <p class="text-muted">
+        ¿Necesitas ayuda o ver el resumen de operaciones? Visita la sección <a asp-controller="Home" asp-action="Dashboard">Dashboard</a>.
+    </p>
 </div>

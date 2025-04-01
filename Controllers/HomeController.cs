@@ -34,5 +34,13 @@ namespace EMPLOYEE_MANAGER.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpPost]
+        public IActionResult LimpiarAuditoria()
+        {
+          AuditoriaStore.Registros.Clear();
+          TempData["Mensaje"] = "✅ Auditoría limpiada correctamente.";
+          return RedirectToAction("Dashboard");
+        }
     }
 }

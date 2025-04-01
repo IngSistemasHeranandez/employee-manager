@@ -19,6 +19,13 @@
     ViewData["Title"] = "Dashboard";
 }
 
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success text-center">
+        @TempData["Mensaje"]
+    </div>
+}
+
 <h1>@ViewData["Title"]</h1>
 
 @{
@@ -28,6 +35,13 @@
     var deletes = Model?.Count(r => r.Accion == "Delete") ?? 0;
     var selects = Model?.Count(r => r.Accion == "Select") ?? 0;
 }
+
+<form asp-action="LimpiarAuditoria" method="post" class="mb-3">
+    <button type="submit" class="btn btn-danger">
+        🧹 Limpiar Auditoría
+    </button>
+</form>
+
 
 <p>
     <strong>Resumen:</strong> Total: @total |
