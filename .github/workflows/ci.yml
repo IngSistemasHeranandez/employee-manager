@@ -1,0 +1,38 @@
+name: CI - EMPLOYEE-MANAGER
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clonar repositorio
+      uses: actions/checkout@v3
+
+    - name: Configurar .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'  # Ajusta si estás usando otra versión
+
+    - name: Instalar SonarScanner para .NET
+      run: dotnet tool install --global dotnet-sonarscanner
+
+    - name: Iniciar análisis de SonarCloud
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        PATH: ${{ env.PATH }}:/github/home/.dotnet/tools
+      run: |
+        dotnet-sonarscanner begin /k:"employee-manager" /o:"IngSistemasHeranandez" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+
+        dotnet restore
+        dotnet build --no-restore
+
+        dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+    - name: Ejecutar pruebas
+      run: dotnet test --no-build --verbosity normal
