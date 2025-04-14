@@ -20,22 +20,25 @@ jobs:
         dotnet-version: '8.0.x'  # Asegúrate de usar la versión que necesites
 
     - name: Instalar SonarScanner para .NET
-      run: dotnet tool install --global dotnet-sonarscanner
+      run: |
+        # Instalar SonarScanner en un directorio específico
+        dotnet tool install --tool-path ./tools dotnet-sonarscanner
+        # Añadir al PATH para que sea accesible
+        echo "$GITHUB_WORKSPACE/tools/.dotnet/tools" >> $GITHUB_ENV
 
     - name: Iniciar análisis de SonarCloud
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        PATH: ${{ env.PATH }}:/github/home/.dotnet/tools
       run: |
         # Inicia el análisis con SonarCloud
-        dotnet-sonarscanner begin /k:"employee-manager" /o:"IngSistemasHeranandez" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+        ./tools/.dotnet/tools/dotnet-sonarscanner begin /k:"employee-manager" /o:"IngSistemasHeranandez" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
 
         # Restaura las dependencias y compila el proyecto
         dotnet restore
         dotnet build --no-restore
 
         # Finaliza el análisis con SonarCloud
-        dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        ./tools/.dotnet/tools/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
     - name: Ejecutar pruebas
       run: dotnet test --no-build --verbosity normal
