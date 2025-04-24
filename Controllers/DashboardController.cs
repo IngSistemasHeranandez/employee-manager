@@ -14,4 +14,6 @@ namespace EMPLOYEE_MANAGER.Controllers
             return View(registros); // Pasamos la lista como modelo
         }
     }
+
+    
 }
