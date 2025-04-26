@@ -434,7 +434,7 @@ public async Task<IActionResult> EliminarMasivo(bool auditoriaIndividual = false
     return RedirectToAction(nameof(Index));
 }
 
-[HttpPost]
+[HttpPost]    //Comentaria para Editar
 public async Task<IActionResult> EditarMasivo(bool auditoriaIndividual = false)
 {
     var random = new Random();
