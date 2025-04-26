@@ -10,7 +10,7 @@ using EMPLOYEE_MANAGER.Services;
 using System.Diagnostics;
 
 
-
+// Este comentario es solo para fines de revisión
 namespace EMPLOYEE_MANAGER.Controllers
 {
     public class EmpleadosController : Controller
@@ -19,33 +19,57 @@ namespace EMPLOYEE_MANAGER.Controllers
 
         public EmpleadosController(AppDbContext context)
         {
-            _context = context;
+            _context = context; 
         }
 
-        // GET: Empleados
-    public async Task<IActionResult> Index()
-    {
-      // Establece cookie para usar conexión local (EF Core)
-      Response.Cookies.Append("ConnectionPreference", "Local");
-      ViewData["Modo"] = "EF Core"; // ← esto indica el modo
-      var sw = Stopwatch.StartNew();
-      var empleados = await _context.Empleados.ToListAsync();
-      sw.Stop();
-      AuditoriaStore.Registros.Add(new AuditoriaRegistro
+        public async Task<IActionResult> Index()
         {
-          FechaHora = DateTime.Now,
-          Accion = "Select",
-          TipoAcceso = "EF Core",
-          Entidad = "Empleado",
-          IdAfectado = null,
-          TiempoMs = sw.ElapsedMilliseconds,
-          Ruta = "/Empleados/Index",
-          Metodo = "GET",
-          Observacion = "Carga de lista de empleados"
-        });
+            try
+            {
+                // Establece cookie para usar conexión local (EF Core)
+                Response.Cookies.Append("ConnectionPreference", "Local");
+                ViewData["Modo"] = "EF Core"; // ← esto indica el modo
+                var sw = Stopwatch.StartNew();
 
-        return View(empleados);
-    }
+                // Verifica que _context no sea null antes de usarlo
+                if (_context == null)
+                {
+                    throw new InvalidOperationException("El contexto de la base de datos no está inicializado.");
+                }
+
+                var empleados = await _context.Empleados.ToListAsync();
+
+                sw.Stop();
+
+                // Verifica que la lista de empleados no sea null
+                if (empleados == null)
+                {
+                    throw new InvalidOperationException("No se pudo obtener la lista de empleados.");
+                }
+
+                AuditoriaStore.Registros.Add(new AuditoriaRegistro
+                {
+                    FechaHora = DateTime.Now,
+                    Accion = "Select",
+                    TipoAcceso = "EF Core",
+                    Entidad = "Empleado",
+                    IdAfectado = null,
+                    TiempoMs = sw.ElapsedMilliseconds,
+                    Ruta = "/Empleados/Index",
+                    Metodo = "GET",
+                    Observacion = "Carga de lista de empleados"
+                });
+
+                return View(empleados);
+            }
+            catch (Exception ex)
+            {
+                // Si ocurre cualquier error, captúralo y devuélvelo como un mensaje de error más detallado
+                ViewData["Error"] = $"Error: {ex.Message}";
+                return View("Error"); // Redirige a una vista de error con el mensaje
+            }
+        }
+
 
 
         // GET: Empleados/Details/5
