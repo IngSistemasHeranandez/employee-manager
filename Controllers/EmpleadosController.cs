@@ -272,6 +272,7 @@ public async Task<IActionResult> DeleteConfirmed(int id)
         [HttpPost]
 public async Task<IActionResult> InsertarMasivo(bool auditoriaIndividual = false)
 {
+            //Comentario
     var empleados = new List<Empleado>
     {
         new Empleado { Nombre = "Juan Pérez", Puesto = "Desarrollador", FechaContratacion = DateTime.Parse("2022-01-15"), Salario = 48000 },
