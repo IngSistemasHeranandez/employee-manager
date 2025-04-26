@@ -267,8 +267,9 @@ public async Task<IActionResult> DeleteConfirmed(int id)
 
     return RedirectToAction(nameof(Index));
 }
+        // Comentario agregado para revisión de práctica
 
-[HttpPost]
+        [HttpPost]
 public async Task<IActionResult> InsertarMasivo(bool auditoriaIndividual = false)
 {
     var empleados = new List<Empleado>
